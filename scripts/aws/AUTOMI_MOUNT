@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# !Be Careful
+# (1) skipping fingerprint check when executing commands on EC2 instances
+# (2) run on Local computer with AWS-CLI configured
+
+
+# path to Public IP address file
+public_ip_file="$(dirname "$(dirname "$PWD")")/PublicIPs"
+echo $public_ip_file
+
+# Array to store the public IP addresses
+public_ip_arr=()
+
+# Read the IP addresses file line by line
+while IFS= read -r ip_address; do
+    public_ip_arr+=("$ip_address")
+done < "$public_ip_file"
+
+MOUND_CMD="sudo mount /dev/nvme1n1 /AutoMI && sudo chown -R ubuntu:root /AutoMI && exit"
+
+for ip_address in "${public_ip_arr[@]}"; do
+    echo "mounting /dev/nvme1n1 at /AutoMI on $ip_address"
+    ssh -o StrictHostKeyChecking=no -i ~/AWS_Key.pem ubuntu@$ip_address $MOUND_CMD
+done

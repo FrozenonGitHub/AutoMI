@@ -1,0 +1,7 @@
+#!/bin/bash
+
+src_path=$(hostname):$PWD
+dest_path=$PWD
+host_file=~/machines
+mpiexec.openmpi -hostfile $host_file -nolocal -pernode mkdir -p $dest_path
+mpiexec.openmpi -hostfile $host_file -nolocal -pernode rsync -e 'ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/id_rsa' -avz --exclude '*.make' --exclude '*.cmake' --exclude '*.internal' --exclude '*.includecache' --exclude '*.o' $src_path/ $dest_path

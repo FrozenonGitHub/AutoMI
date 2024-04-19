@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# !Be Careful
+# (1) RUN on "master" ec2 instance with code repository in /AutoMI
+# (2) `/AutoMI/machines` should contain one private ip address in each line of all ec2 instances
+# (3) this script is vulnerable to Man-In-The-Middle attack, only for AUTOMI experiments on aws ec2 cluster 
+
+# Path to the IP addresses text file
+ip_file="/AutoMI/machines"
+# Copy hostfile with private IP addresses to ~/machines
+cp $ip_file ~/machines
+
+# Array to store the private IP addresses
+ip_address_arr=()
+
+# Read the IP addresses file line by line
+while IFS= read -r ip_address; do
+    ip_address_arr+=("$ip_address")
+done < "$ip_file"
+
+# Add finger print of machines to ~/.ssh/know_hosts
+for ip_address in "${ip_address_arr[@]}"; do
+    ssh-keyscan $ip_address >> ~/.ssh/known_hosts
+done
+
+for ip_address in "${ip_address_arr[@]}"; do
+    scp ~/.ssh/known_hosts ubuntu@$ip_address:~/.ssh/known_hosts
+    scp ~/machines ubuntu@$ip_address:~/machines
+done
+
+GA_DIR="/AutoMI/release/toolkits/graph_automi"
+BUILDING_DIRS=($GA_DIR)
+
+# Disabled build for now (assume already done)
+REBUILD_FLAG=false
+if [ "$REBUILD_FLAG" = true ]; then
+    cd /AutoMI
+    ./configure
+    for APP_BUILD_DIR in "${BUILDING_DIRS[@]}"; do
+        cd $APP_BUILD_DIR
+        make -j
+    done
+    cd $APP_BUILD_DIR
+    make -j
+fi
+
+# Copy necessary files through MPI rsync
+cd /AutoMI/deps/local
+/AutoMI/scripts/mpirsync
+for APP_BUILD_DIR in "${BUILDING_DIRS[@]}"; do
+    cd $APP_BUILD_DIR
+    /AutoMI/scripts/mpirsync
+done
+
+RSYNC_DATASETS=true
+if [ "$RSYNC_DATASETS" = true ]; then
+    cd /AutoMI/datasets
+    /AutoMI/scripts/mpirsync
+fi
+
+echo "AUTOMI_INIT Finished!"

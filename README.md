@@ -1,1 +1,35 @@
 # AutoMI
+
+This repository contains implementation of AutoMI, a framework for automatically converting vertex-centric graph algorithms into their multi-instance versions. Currently AutoMI suports GAS programs that run on popular distributed GAS systems, e.g., PowerGraph and PowerLyra. To evaluate the efficiency of AutoMI generated multi-instance GAS programs and the effectiveness of TrackFree optimization, we tested Boolean BFS, Integer BFS, SSSP, SpMV, PPR, GC and CF (SGD) over real-life and synthetic graphs. Further details can be found in our paper.
+
+## Datasets
+* We use the following data graphs in the experiment.
+  * LiveJournal [link](http://snap.stanford.edu/data/soc-LiveJournal1.html)
+  * Twitter [link](http://konect.cc/networks/twitter/)
+  * Friendster [link]( http://konect.cc/networks/friendster/)
+  * UKDomain [link](http://konect.cc/networks/dimacs10-uk-2007-05/)
+  * MovieLens [link](http://grouplens.org/datasets/movielens/)
+  * NetFlix [link](http://konect.cc/networks/netflix/)
+
+## Usage
+
+### 1. AWS EC2 Environment Setup
+* You should have Amazon EC2 cluster with password-less SSH setup between machines
+
+* In `/AutoMI/machines` file, provide private IP of EC2 instances one by one in each line. Similarly for public IP in `/AutoMI/PublicIP`
+
+* Mount EBS volumes by running `script/aws/AUTOMI_MOUNT` script
+
+### 2. Building
+* On master machine, build AutoMI as follows:
+```
+$ cd /AutoMI
+$ ./configure
+$ cd /AutoMI/release/toolkits/graph_automi
+$ make
+```
+
+### 3. Testing
+* Run `/AutoMI/scripts/aws/AUTOMI_INIT` script to prepare EC2 cluster
+
+* See `script/aws/bench_automi.sh` for an example to run tests for SSSP over LiveJournal graph
