@@ -16,12 +16,14 @@ This repository contains implementation of AutoMI, a framework for automatically
 ### 1. AWS EC2 Environment Setup
 * You should have Amazon EC2 cluster with password-less SSH setup between machines
 
-* In `machines` file, provide private IP of EC2 instances one by one in each line. Similarly for public IP in `PublicIP` file.
+* On your local machine, provide private IP of EC2 instances in `machines` file one by one in each line. Similarly for public IP in `PublicIP` file.
 
-* Run `script/aws/AUTOMI_MOUNT` script to create `/AutoMI` directory and mount EBS volume at `/AutoMI` on each EC2 instance
+* On your local machine, run `script/aws/AUTOMI_MOUNT` script to create `/AutoMI` directory and mount EBS volume at `/AutoMI` on each EC2 instance.
 
 ### 2. Building
-* On master machine, build AutoMI as follows:
+* Synchronize current directory on your local machine with the `/AutoMI` directory on EC2 master machine.
+
+* On EC2 master machine, build AutoMI as follows:
 ```
 $ cd /AutoMI
 $ ./configure
@@ -30,6 +32,6 @@ $ make
 ```
 
 ### 3. Testing
-* Run `/AutoMI/scripts/aws/AUTOMI_INIT` script to prepare EC2 cluster
+* On EC2 master machine, run `/AutoMI/scripts/aws/AUTOMI_INIT` script to prepare EC2 cluster
 
-* See `script/aws/bench_automi.sh` for an example to run tests for SSSP over LiveJournal graph
+* See `/AutoMI/script/aws/bench_automi.sh` for an example to run tests for SSSP over LiveJournal graph
