@@ -22,7 +22,7 @@ $ python converter.py --track-free <single-instance-filename> <multi-instance-fi
 $ python converter.py example_single_SSSP.cpp track_sssp.cpp
 # generates multi-instance SSSP (without TrackFree),
 
-$ python converter.py example_single_SSSP.cpp trackfree_sssp.cpp
+$ python converter.py --track-free example_single_SSSP.cpp trackfree_sssp.cpp
 # generates multi-instance SSSP with TrackFree enabled.
 ```
 
