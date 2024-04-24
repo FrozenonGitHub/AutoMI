@@ -125,7 +125,7 @@ public:
     // find the smallest color not described in the neighborhood
     if (msg_accum.color != 0) {
       color_type temp = msg_accum.color + 1;
-      color_type c = temp & ~msg_accum.color;
+      color_type c = temp &~msg_accum.color;
       if (vertex.data().color != c) {
         vertex.data().color = c;
         changed = true;
@@ -146,9 +146,8 @@ public:
               const vertex_type& vertex,
               edge_type& edge) const {
     const vertex_type other = get_other_vertex(edge, vertex);
-    msg_type msg = msg_type();
+    msg_type msg = msg_type(vertex.data().color);
     if (changed) {
-      msg.color = vertex.data().color;
       context.signal(other, msg);
     }
   }

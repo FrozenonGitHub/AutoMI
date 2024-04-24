@@ -170,8 +170,7 @@ public:
 
   edge_dir_type scatter_edges(icontext_type& context,
                              const vertex_type& vertex) const {
-    if (EDGE_CONSISTENT) return graphlab::NO_EDGES;
-    else return graphlab::ALL_EDGES;
+    return graphlab::ALL_EDGES;
   } 
 
 
@@ -183,10 +182,19 @@ public:
   void scatter(icontext_type& context,
               const vertex_type& vertex,
               edge_type& edge) const {
+    const vertex_type other = get_other_vertex(edge, vertex);
+    msg_type msg(vertex.data().color);
     if (!changed.vec_all_zeros()) {
-      const vertex_type other = get_other_vertex(edge, vertex);
-      context.signal(other);
+      context.signal(other, msg);
     }
+  }
+
+  void save(graphlab::oarchive &oarc) const {
+    oarc << changed;
+  }
+
+  void load(graphlab::iarchive& iarc) {
+    iarc >> changed;
   }
 
 };

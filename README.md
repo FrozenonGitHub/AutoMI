@@ -11,7 +11,22 @@ This repository contains implementation of AutoMI, a framework for automatically
   * MovieLens [link](http://grouplens.org/datasets/movielens/)
   * NetFlix [link](http://konect.cc/networks/netflix/)
 
-## Usage
+## AutoMI auto-conversion
+* Implementation of AutoMI auto-converter can be found under `utils/` directory.
+
+* In order to automatically convert single-instance GAS program to single-instance multi-instance version, use the following command (use "--track-free" to enable TrackFree optimization, optional):
+```
+$ python converter.py --track-free <single-instance-filename> <multi-instance-filename>
+
+# For example:
+$ python converter.py example_single_SSSP.cpp track_sssp.cpp
+# generates multi-instance SSSP (without TrackFree),
+
+$ python converter.py example_single_SSSP.cpp trackfree_sssp.cpp
+# generates multi-instance SSSP with TrackFree enabled.
+```
+
+## Experiments
 
 ### 1. AWS EC2 Environment Setup
 * You should have Amazon EC2 cluster with password-less SSH setup between machines

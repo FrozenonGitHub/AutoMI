@@ -127,14 +127,10 @@ struct msg_type {
 class vertex_program : 
     public graphlab::ivertex_program<graph_type, msg_type, msg_type> {
     
-    graphlab::automi_bitvec<bool> vp_track;
     graphlab::automi_bitvec<bool> changed;
+    graphlab::automi_bitvec<bool> vp_track;
 
 public:
-    vertex_program() {
-        changed = graphlab::automi_bitvec<bool>(NUM_SRC_NODES);
-        vp_track = graphlab::automi_bitvec<bool>(NUM_SRC_NODES);
-    }
 
     edge_dir_type gather_edges(icontext_type& context,
                                const vertex_type& vertex) const {
@@ -161,11 +157,7 @@ public:
     // scatter_nbrs function
     edge_dir_type scatter_edges(icontext_type& context,
                                 const vertex_type& vertex) const {
-        if (!changed.vec_all_zeros()) {
-            return DIRECTED_GRAPH? graphlab::OUT_EDGES : graphlab::ALL_EDGES;
-        } else {
-            return graphlab::NO_EDGES;
-        }
+      return DIRECTED_GRAPH? graphlab::OUT_EDGES : graphlab::ALL_EDGES;
     }
 
     // Scatter function
@@ -181,6 +173,17 @@ public:
             context.signal(other, msg);
         }
     }
+
+  void save(graphlab::oarchive &oarc) const {
+    oarc << changed;
+    oarc << vp_track;
+  }
+
+  void load(graphlab::iarchive& iarc) {
+    iarc >> changed;
+    iarc >> vp_track;
+  }
+
 };  // end of vertex program
 
 

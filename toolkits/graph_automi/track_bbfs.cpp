@@ -162,10 +162,21 @@ public:
         const vertex_type other = get_other_vertex(edge, vertex);
         graphlab::automi_bitvec<bool> mask;
         mask.vec_op_set_mask(vp_track, changed);
+        msg_type msg(vertex.data().ans);
         if (!mask.vec_all_zeros()) {
-            msg_type msg(vertex.data().ans, mask);
+            msg.track = mask;
             context.signal(other, msg);
         }
+    }
+
+    void save(graphlab::oarchive &oarc) const {
+      oarc << changed;
+      oarc << vp_track;
+    }
+
+    void load(graphlab::iarchive& iarc) {
+      iarc >> changed;
+      iarc >> vp_track;
     }
 
 };  // end of vertex program

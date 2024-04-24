@@ -76,7 +76,7 @@ struct msg_type : graphlab::IS_POD_TYPE {
 
     // Gather\_Acc function
     msg_type& operator+=(const msg_type& other) {
-        ans += other.ans;
+        ans = ans + other.ans;
         return *this;
     }
 };
@@ -99,9 +99,8 @@ public:
     msg_type gather(icontext_type& context, const vertex_type& vertex,
                        edge_type& edge) const {
         const vertex_type other = get_other_vertex(edge, vertex);
-        ans_type spmv_mul_factor = edge.data().dist * DAMP_FACTOR;
         msg_type gather_msg = msg_type();
-        gather_msg.ans = other.data().ans * spmv_mul_factor;
+        gather_msg.ans = other.data().ans * edge.data().dist;
         return gather_msg;
     }
 
@@ -121,7 +120,8 @@ public:
     void scatter(icontext_type& context, const vertex_type& vertex,
                  edge_type& edge) const {
         const vertex_type other = get_other_vertex(edge, vertex);
-        context.signal(other, msg_type());
+        msg_type msg = msg_type(vertex.data().ans);
+        context.signal(other, msg);
     }
 
 }; // end of vertex program

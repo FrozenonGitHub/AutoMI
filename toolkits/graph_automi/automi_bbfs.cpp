@@ -138,22 +138,27 @@ public:
     // scatter_nbrs function
     edge_dir_type scatter_edges(icontext_type& context,
                                 const vertex_type& vertex) const {
-        if (!changed.vec_all_zeros()) {
-            return DIRECTED_GRAPH ? graphlab::OUT_EDGES : graphlab::ALL_EDGES;
-        } else {
-            return graphlab::NO_EDGES;
-        }
+      return DIRECTED_GRAPH ? graphlab::OUT_EDGES : graphlab::ALL_EDGES;
     }
 
     // Scatter function
     void scatter(icontext_type& context, const vertex_type& vertex,
                  edge_type& edge) const {
         const vertex_type other = get_other_vertex(edge, vertex);
+        msg_type msg();
+        msg.ans.vec_op_set(vertex.data().ans);
         if (!changed.vec_all_zeros()) {
-            msg_type msg(vertex.data().ans);
             context.signal(other, msg);
         }
     }
+
+  void save(graphlab::oarchive &oarc) const {
+    oarc << changed;
+  }
+
+  void load(graphlab::iarchive& iarc) {
+    iarc >> changed;
+  }
 
 };  // end of vertex program
 

@@ -157,8 +157,19 @@ public:
     // Scatter function
     void scatter(icontext_type& context, const vertex_type& vertex, edge_type& edge) const {
         const vertex_type other = get_other_vertex(edge, vertex);
-        msg_type msg(vertex.data().ans, vp_track);
+        msg_type msg(vertex.data().ans);
+        msg.track = vp_track;
         context.signal(other, msg);
+    }
+
+    void save(graphlab::oarchive &oarc) const {
+      oarc << changed;
+      oarc << vp_track;
+    }
+
+    void load(graphlab::iarchive& iarc) {
+      iarc >> changed;
+      iarc >> vp_track;
     }
 
 };  // end of vertex program

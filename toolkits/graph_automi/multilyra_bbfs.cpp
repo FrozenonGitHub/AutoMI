@@ -208,11 +208,7 @@ public:
     // scatter_nbrs function
     edge_dir_type scatter_edges(icontext_type& context,
                                 const vertex_type& vertex) const {
-        if (updated) {
-            return DIRECTED_GRAPH? graphlab::OUT_EDGES : graphlab::ALL_EDGES;
-        } else {
-            return graphlab::NO_EDGES;
-        }
+        return DIRECTED_GRAPH? graphlab::OUT_EDGES : graphlab::ALL_EDGES;
     }
 
     // Scatter function
