@@ -50,3 +50,8 @@ $ make
 * On EC2 master machine, run `/AutoMI/scripts/aws/AUTOMI_INIT` script to prepare EC2 cluster
 
 * See `/AutoMI/script/aws/bench_automi.sh` for an example to run tests for SSSP over LiveJournal graph
+
+### 4. Quegel
+* We are using open-source Quegel implementation, under `./Quegel` directory
+
+* Please check [link](http://www.cse.cuhk.edu.hk/systems/quegel/) for details
